@@ -2,6 +2,7 @@ import os
 import discord
 from discord.ext import commands, tasks
 from dotenv import load_dotenv
+from keep_alive import keep_alive
 
 from database import (
     setup_database,
@@ -681,7 +682,6 @@ async def rejectrule(interaction: discord.Interaction, proposal_id: int):
         )
         return
 
-    # Admin no vote = rule fails immediately and pings @everyone + @Admin
     if has_admin_role(user):
         fail_reason = "Admin voted no on the rule proposal."
 
@@ -717,7 +717,6 @@ async def rejectrule(interaction: discord.Interaction, proposal_id: int):
         )
         return
 
-    # Player no vote = no ping, does not fail the rule
     success, message = reject_rule_as_player(
         proposal_id,
         user.id,
@@ -833,4 +832,5 @@ async def rulestatus(interaction: discord.Interaction, proposal_id: int):
 if TOKEN is None:
     print("ERROR: DISCORD_TOKEN was not found. Check your .env file.")
 else:
+    keep_alive()
     bot.run(TOKEN)
